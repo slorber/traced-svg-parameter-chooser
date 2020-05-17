@@ -124,9 +124,10 @@ const TracedSvg = (props: TracedSvgProps) => {
     svgElement.setAttribute('width', `${finalWidth}`);
     svgElement.setAttribute('height', `${finalHeight}`);
 
-    //svgElement.style.color = color;
+    svgElement.setAttribute("color",color);
     svgElement.childNodes.forEach((path: any) => {
-      //path.style.fill = 'currentColor';
+      path.setAttribute("fill","currentColor");
+      path.setAttribute("stroke","currentColor");
     });
 
     console.debug('div', div, div.innerHTML);
@@ -164,10 +165,10 @@ function App({}: React.Props<{}>) {
     <>
       <Row>
 
-        <div style={{padding: 10}}>
+        <div style={{margin: 10}}>
           <img src={url} style={{width}}/>
         </div>
-        <div style={{padding: 10}}>
+        <div style={{margin: 10}}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -175,7 +176,7 @@ function App({}: React.Props<{}>) {
             turnPolicy="minority"
           />
         </div>
-        <div style={{padding: 10}}>
+        <div style={{margin: 10}}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -184,7 +185,7 @@ function App({}: React.Props<{}>) {
             turdSize={5000}
           />
         </div>
-        <div style={{padding: 10}}>
+        <div style={{margin: 10}}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -194,7 +195,7 @@ function App({}: React.Props<{}>) {
             roughOptions={{roughness: 2.8, fill: 'blue'}}
           />
         </div>
-        <div style={{padding: 10}}>
+        <div style={{margin: 10}}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -204,7 +205,7 @@ function App({}: React.Props<{}>) {
             roughOptions={{roughness: 8, fill: 'red'}}
           />
         </div>
-        <div style={{padding: 10}}>
+        <div style={{margin: 10}}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -219,10 +220,10 @@ function App({}: React.Props<{}>) {
           />
         </div>
 
-        <div style={{padding: 10}}>
+        <div style={{margin: 10}}>
           <TracedSvg
             url="lena.jpg"
-            color="lightgrey"
+            color="green"
             width={width}
             turnPolicy="minority"
             turdSize={5000}
@@ -236,8 +237,51 @@ function App({}: React.Props<{}>) {
             }}
           />
         </div>
+        <div style={{margin: 10}}>
+          <TracedSvg
+            url="lena.jpg"
+            color="blue"
+            width={width}
+            turnPolicy="minority"
+            roughOptions={{
+              fill: 'red',
+              fillStyle: "dots",
+              hachureAngle: 60, // angle of hachure,
+              hachureGap: 20,
+              stroke: 'blue',
+              bowing: 6,
+              strokeWidth: 3
+            }}
+          />
+        </div>
+
+        <div style={{position: "relative", margin: 10}}>
+          <TracedSvg
+            url="lena.jpg"
+            color="lightgrey"
+            width={width}
+            turnPolicy="minority"
+            turdSize={5000}
+          />
+          <TracedSvg
+            url="lena.jpg"
+            color="blue"
+            width={width}
+            turnPolicy="minority"
+            roughOptions={{
+              fill: 'red',
+              fillStyle: "dots",
+              hachureAngle: 60, // angle of hachure,
+              hachureGap: 20,
+              stroke: 'red',
+              bowing: 5,
+              strokeWidth: 5
+            }}
+            style={{position: "absolute",top: 0, left: 0, opacity: 0.3}}
+          />
+        </div>
         {/*
-        <div style={{ padding: 10 }}>
+        <div style={{ margin: 10 }}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -245,7 +289,7 @@ function App({}: React.Props<{}>) {
             turnPolicy="majority"
           />
         </div>
-        <div style={{ padding: 10 }}>
+        <div style={{ margin: 10 }}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -253,7 +297,7 @@ function App({}: React.Props<{}>) {
             turnPolicy="black"
           />
         </div>
-        <div style={{ padding: 10 }}>
+        <div style={{ margin: 10 }}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -261,7 +305,7 @@ function App({}: React.Props<{}>) {
             turnPolicy="white"
           />
         </div>
-        <div style={{ padding: 10 }}>
+        <div style={{ margin: 10 }}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -269,7 +313,7 @@ function App({}: React.Props<{}>) {
             turnPolicy="left"
           />
         </div>
-        <div style={{ padding: 10 }}>
+        <div style={{ margin: 10 }}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -281,7 +325,7 @@ function App({}: React.Props<{}>) {
       </Row>
       {/*}
             <Row>
-                <div style={{padding: 10}}>
+                <div style={{margin: 10}}>
                     <TracedSvg
                         url="lena.jpg"
                         color="lightgrey"
@@ -289,7 +333,7 @@ function App({}: React.Props<{}>) {
                         turdSize={5000}
                     />
                 </div>
-                <div style={{padding: 10}}>
+                <div style={{margin: 10}}>
                     <TracedSvg
                         url="lena.jpg"
                         color="lightgrey"
@@ -300,7 +344,7 @@ function App({}: React.Props<{}>) {
             </Row>
 
             <Row>
-                <div style={{padding: 10}}>
+                <div style={{margin: 10}}>
                     <TracedSvg
                         url="lena.jpg"
                         color="lightgrey"
@@ -308,7 +352,7 @@ function App({}: React.Props<{}>) {
                         alphaMax={5000}
                     />
                 </div>
-                <div style={{padding: 10}}>
+                <div style={{margin: 10}}>
                     <TracedSvg
                         url="lena.jpg"
                         color="lightgrey"
@@ -320,7 +364,7 @@ function App({}: React.Props<{}>) {
 
 
             <Row>
-                <div style={{padding: 10}}>
+                <div style={{margin: 10}}>
                     <TracedSvg
                         url="lena.jpg"
                         color="lightgrey"
@@ -328,7 +372,7 @@ function App({}: React.Props<{}>) {
                         curveOptimizationTolerance={0.001}
                     />
                 </div>
-                <div style={{padding: 10}}>
+                <div style={{margin: 10}}>
                     <TracedSvg
                         url="lena.jpg"
                         color="lightgrey"
@@ -340,7 +384,7 @@ function App({}: React.Props<{}>) {
 
 
             <Row>
-                <div style={{padding: 10}}>
+                <div style={{margin: 10}}>
                     <TracedSvg
                         url="lena.jpg"
                         color="lightgrey"
