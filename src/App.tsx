@@ -1,8 +1,19 @@
 import * as React from 'react';
 
+import rough from 'roughjs';
+
+
 // @ts-ignore
-import { createPotrace } from './potrace';
-import { useEffect, useRef, useState } from 'react';
+import {createPotrace} from './potrace';
+
+// @ts-ignore
+import {coarse} from './coarse';
+
+
+type RoughConfig = Exclude<Parameters<typeof rough.svg>[1], undefined>['options']
+
+
+import {ComponentProps, ReactNode, useEffect, useRef, useState} from 'react';
 
 const TurnPolicies = [
   'black',
@@ -14,10 +25,15 @@ const TurnPolicies = [
 ] as const;
 type TurnPolicy = typeof TurnPolicies[number];
 
+// See https://github.com/kilobtye/potrace/blob/master/potrace.js
+// See also https://github.com/tooolbox/node-potrace#parameters
 type TracedSvgProps = {
   url: string;
   color: string;
   width: number;
+  style?: ComponentProps<"div">["style"];
+
+  roughOptions?: RoughConfig
 
   // turnpolicy: how to resolve ambiguities in path decomposition. (default: "minority")
   turnPolicy?: TurnPolicy;
@@ -36,13 +52,13 @@ type TracedSvgProps = {
 };
 
 const useTracedSvg = ({
-  url,
-  turnPolicy,
-  turdSize,
-  optimizeCurve,
-  alphaMax,
-  curveOptimizationTolerance,
-}: TracedSvgProps) => {
+                        url,
+                        turnPolicy,
+                        turdSize,
+                        optimizeCurve,
+                        alphaMax,
+                        curveOptimizationTolerance,
+                      }: TracedSvgProps) => {
   const [svg, setSvg] = useState<string | null>(null);
 
   useEffect(() => {
@@ -51,14 +67,15 @@ const useTracedSvg = ({
     const potrace = createPotrace();
 
     const params: any = {
-      ...(turnPolicy && { turnpolicy: turnPolicy }),
-      ...(turdSize && { turdsize: turdSize }),
-      ...(optimizeCurve && { optcurve: optimizeCurve }),
-      ...(alphaMax && { alphamax: alphaMax }),
+      ...(turnPolicy && {turnpolicy: turnPolicy}),
+      ...(turdSize && {turdsize: turdSize}),
+      ...(optimizeCurve && {optcurve: optimizeCurve}),
+      ...(alphaMax && {alphamax: alphaMax}),
       ...(curveOptimizationTolerance && {
         opttolerance: curveOptimizationTolerance,
       }),
     };
+    console.debug('params', params);
     potrace.setParameter(params);
 
     const loadImage = () => potrace.loadImageFromUrl(imgUrl);
@@ -81,7 +98,7 @@ const useTracedSvg = ({
 };
 
 const TracedSvg = (props: TracedSvgProps) => {
-  const { width, color, url } = props;
+  const {style, width, color, roughOptions} = props;
   const svg = useTracedSvg(props);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -107,16 +124,37 @@ const TracedSvg = (props: TracedSvgProps) => {
     svgElement.setAttribute('width', `${finalWidth}`);
     svgElement.setAttribute('height', `${finalHeight}`);
 
-    svgElement.style.color = color;
+    //svgElement.style.color = color;
     svgElement.childNodes.forEach((path: any) => {
-      path.style.fill = 'currentColor';
+      //path.style.fill = 'currentColor';
     });
 
-    return () => svgElement.remove();
-  }, [svg, width, color]);
+    console.debug('div', div, div.innerHTML);
+    if (roughOptions){
+        div.innerHTML = coarse(svgElement, roughOptions);
+    }
 
-  return <div ref={ref} style={{ width }} />;
+    return () => svgElement.remove();
+  }, [svg, width, color, roughOptions]);
+
+  return <div ref={ref} style={{...style}}/>;
 };
+
+
+
+const Row = ({children}: {children: ReactNode}) => (
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'row',
+      // justifyContent: 'center',
+      width: '100%',
+      flexWrap: 'wrap',
+    }}
+  >
+    {children}
+  </div>
+);
 
 function App({}: React.Props<{}>) {
   const width = 300;
@@ -124,19 +162,12 @@ function App({}: React.Props<{}>) {
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          width: '100%',
-          flexWrap: 'wrap',
-        }}
-      >
-        <div style={{ padding: 10 }}>
-          <img src={url} style={{ width }} />
+      <Row>
+
+        <div style={{padding: 10}}>
+          <img src={url} style={{width}}/>
         </div>
-        <div style={{ padding: 10 }}>
+        <div style={{padding: 10}}>
           <TracedSvg
             url="lena.jpg"
             color="lightgrey"
@@ -144,6 +175,68 @@ function App({}: React.Props<{}>) {
             turnPolicy="minority"
           />
         </div>
+        <div style={{padding: 10}}>
+          <TracedSvg
+            url="lena.jpg"
+            color="lightgrey"
+            width={width}
+            turnPolicy="minority"
+            turdSize={5000}
+          />
+        </div>
+        <div style={{padding: 10}}>
+          <TracedSvg
+            url="lena.jpg"
+            color="lightgrey"
+            width={width}
+            turnPolicy="minority"
+            turdSize={5000}
+            roughOptions={{roughness: 2.8, fill: 'blue'}}
+          />
+        </div>
+        <div style={{padding: 10}}>
+          <TracedSvg
+            url="lena.jpg"
+            color="lightgrey"
+            width={width}
+            turnPolicy="minority"
+            turdSize={5000}
+            roughOptions={{roughness: 8, fill: 'red'}}
+          />
+        </div>
+        <div style={{padding: 10}}>
+          <TracedSvg
+            url="lena.jpg"
+            color="lightgrey"
+            width={width}
+            turnPolicy="minority"
+            turdSize={5000}
+            roughOptions={{
+              fill: "blue",
+              fillStyle: "dashed",
+              fillWeight: 1 // thicker lines for hachure
+            }}
+          />
+        </div>
+
+        <div style={{padding: 10}}>
+          <TracedSvg
+            url="lena.jpg"
+            color="lightgrey"
+            width={width}
+            turnPolicy="minority"
+            turdSize={5000}
+            roughOptions={{
+              fill: 'red',
+              hachureAngle: 60, // angle of hachure,
+              hachureGap: 8,
+              stroke: 'red',
+              bowing: 6,
+              strokeWidth: 3
+            }}
+          />
+        </div>
+        {/*
         <div style={{ padding: 10 }}>
           <TracedSvg
             url="lena.jpg"
@@ -184,7 +277,79 @@ function App({}: React.Props<{}>) {
             turnPolicy="right"
           />
         </div>
-      </div>
+        */}
+      </Row>
+      {/*}
+            <Row>
+                <div style={{padding: 10}}>
+                    <TracedSvg
+                        url="lena.jpg"
+                        color="lightgrey"
+                        width={width}
+                        turdSize={5000}
+                    />
+                </div>
+                <div style={{padding: 10}}>
+                    <TracedSvg
+                        url="lena.jpg"
+                        color="lightgrey"
+                        width={width}
+                        turdSize={0.001}
+                    />
+                </div>
+            </Row>
+
+            <Row>
+                <div style={{padding: 10}}>
+                    <TracedSvg
+                        url="lena.jpg"
+                        color="lightgrey"
+                        width={width}
+                        alphaMax={5000}
+                    />
+                </div>
+                <div style={{padding: 10}}>
+                    <TracedSvg
+                        url="lena.jpg"
+                        color="lightgrey"
+                        width={width}
+                        alphaMax={0.001}
+                    />
+                </div>
+            </Row>
+
+
+            <Row>
+                <div style={{padding: 10}}>
+                    <TracedSvg
+                        url="lena.jpg"
+                        color="lightgrey"
+                        width={width}
+                        curveOptimizationTolerance={0.001}
+                    />
+                </div>
+                <div style={{padding: 10}}>
+                    <TracedSvg
+                        url="lena.jpg"
+                        color="lightgrey"
+                        width={width}
+                        curveOptimizationTolerance={1000}
+                    />
+                </div>
+            </Row>
+
+
+            <Row>
+                <div style={{padding: 10}}>
+                    <TracedSvg
+                        url="lena.jpg"
+                        color="lightgrey"
+                        width={width}
+                        optimizeCurve={false}
+                    />
+                </div>
+            </Row>
+            */}
     </>
   );
 }
