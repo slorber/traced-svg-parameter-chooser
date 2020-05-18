@@ -1,4 +1,22 @@
-# New Project
+# traced-svg-parameter-choose
+
+Not sure exactly what this project will lead to :D
+
+Currently deployed at https://traced-svg-parameter-chooser.netlify.app/
+
+Here are some random links:
+
+- http://kilobtye.github.io/potrace/
+- https://github.com/tooolbox/node-potrace#parameters
+- https://github.com/pshihn/rough/issues/66
+- https://github.com/ismay/coarse
+- https://jmperezperez.com/svg-placeholders/
+- https://github.com/axe312ger/sqip
+- https://github.com/gatsbyjs/gatsby/pull/2456
+- https://github.com/gatsbyjs/gatsby/blob/6d4fa7694ce4ae17548fcd8dc788af8e69af82c0/packages/gatsby-plugin-sharp/src/trace-svg.js
+
+
+--------------------
 
 > ✨ Bootstrapped with Create Snowpack App (CSA).
 
