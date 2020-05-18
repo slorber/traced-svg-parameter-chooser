@@ -6,6 +6,7 @@ Currently deployed at https://traced-svg-parameter-chooser.netlify.app/
 
 Here are some random links:
 
+- https://twitter.com/sebastienlorber/status/1262084382535401473
 - http://kilobtye.github.io/potrace/
 - https://github.com/tooolbox/node-potrace#parameters
 - https://github.com/pshihn/rough/issues/66
